@@ -1,7 +1,5 @@
 import os
-from flask import Flask
-from flask import Markup
-from flask import render_template
+from flask import Flask, Markup, render_template, request
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.sql import text
 from sqlalchemy import create_engine
@@ -20,11 +18,13 @@ def teste():
     user = request.args.get('user')
     password = request.args.get('password')
     
-    sql_Query_Injection = text("select * from user where id={}".format(id))
-    sql_Query_Not_Injection = text("select * from user where id=:user_id")
-
     conn = db_connect.connect()
-    result = conn.execute(sql_Query_Not_Injection, user_id = id)
+
+    #sql_Query_Not_Injection = text("select * from user where id=:user_id")
+    #result = conn.execute(sql_Query_Not_Injection, user_id = id)
+    
+    sql_Query_Injection = text("select * from user where id={}".format(id))
+    result = conn.execute(sql_Query_Injection)
 
     # user = [row[1] for row in result]
     content = "<table>"
