@@ -12,7 +12,8 @@ stages:
 ver:
   stage: ver
   script:
-    - python --version
+    # Command 'python3' from deb python3 
+    - python3 --version
     - whoami
 
 sast:
