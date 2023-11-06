@@ -8,25 +8,26 @@ Aplicação Flask + BD para demonstração de uma vulnerabilidade SQL Injection 
 
 |id|user |password|
 |--|--|--|
-|1 |teste@teste.com |12345678|
-|2 |teste2@teste.com |87654321|
+|1 |teste@teste.com |1234|
+|2 |teste2@teste.com |1234|
 |3 |teste@teste.com |12345678|
 |4 |teste2@teste.com |87654321|
   
 ## Código
 
-    23 sql_Query_Not_Injection = text("select * from user where id=:user_id")
-    24 result = conn.execute(sql_Query_Not_Injection, user_id = id)
-    25
-    26 sql_Query_Injection_False_Negative = text("select * from user where id={}".format(id))
-    27 result = conn.execute(sql_Query_Injection_False_Negative)
-    28
-    29 sql_Query_Injection = "select * from user where id={}".format(id)
-    30 #result = conn.execute(sql_Query_Injection)
+    63 sql_Query_Not_Injection = text("select * from user where id=:user_id")
+    64 result = conn.execute(sql_Query_Not_Injection, user_id = id)
+    65
+    66 sql_Query_Injection_False_Negative = text("select * from user where id={}".format(id))
+    67 result = conn.execute(sql_Query_Injection_False_Negative)
+    68
+    69 # deprecated in SQLAlchemy >=2.0
+    70 sql_Query_Injection = "select * from user where id={}".format(id)
+    71 result = conn.execute(sql_Query_Injection)
 
- - As linhas 23 e 24 **não contém** uma vulnerabilidade SQL Injection;
- - As linhas 26 e 27 **contém** uma vulnerabilidade SQL Injection, **não identificável** no SAST do .gitlab-ci;
- - As linhas 29 e 30 **contém** uma vulnerabilidade SQL Injection, **identificável** no SAST do .gitlab-ci.
+ - As linhas 63 e 64 **não contém** uma vulnerabilidade SQL Injection;
+ - As linhas 66 e 67 **contém** uma vulnerabilidade SQL Injection, **não identificável** no SAST do .gitlab-ci;
+ - As linhas 70 e 71 **contém** uma vulnerabilidade SQL Injection, **identificável** no SAST do .gitlab-ci.
 
 ## Deploy com docker compose, com MySQL
 ```
