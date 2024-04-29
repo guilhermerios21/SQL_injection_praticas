@@ -58,20 +58,21 @@ def login():
     if request.method == 'GET':
         # Recuperar parâmetros passados via URL após "?"
         id = request.args.get('id')
-        user = request.args.get('username')
-        password = request.args.get('password')
+        username_from_url = request.args.get('username')
+        password_from_url = request.args.get('password')
         
         conn = db_connect.connect()
 
         #sql_Query_Not_Injection = text("SELECT * FROM users WHERE id=:user_id")
         #result = conn.execute(sql_Query_Not_Injection, parameters=dict(user_id = id))
         
-        #sql_Query_Injection_False_Negative = text("SELECT * FROM users WHERE id={}".format(id))
-        #result = conn.execute(sql_Query_Injection_False_Negative)
+        sql_Query_Injection_False_Negative = text("SELECT * FROM users WHERE username = '" + username_from_url + "'"
+                                                " AND password = " + password_from_url)                                         
+        result = conn.execute(sql_Query_Injection_False_Negative)
 
         # deprecated in SQLAlchemy >=2.0
-        sql_Query_Injection = "SELECT * FROM users WHERE id={}".format(id)
-        result = conn.execute(sql_Query_Injection)
+        #sql_Query_Injection = "SELECT * FROM users WHERE id={}".format(id)
+        #result = conn.execute(sql_Query_Injection)
 
         content = "<table>"
         content = content + str("<tr>")
