@@ -22,9 +22,10 @@ ver:
 sast:
   stage: security
   artifacts:
-    # possibilitará o download do relatório SAST gerado
+    # possibilitará o download dos relatórios SAST e Secret-Detection gerados
     paths:
     - 'gl-sast-report.json'
+    - 'gl-secret-detection-report.json'
 include:
 - template: Security/SAST.gitlab-ci.yml
 - template: Security/Secret-Detection.gitlab-ci.yml
