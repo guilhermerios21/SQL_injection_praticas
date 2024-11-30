@@ -1,8 +1,14 @@
 
-# flask-sql-injection
-  
+# Aula 10 - DevSecOps  
 
-Aplicação Flask + BD para demonstração de uma vulnerabilidade SQL Injection identificada pelo SAST do .gitlab-ci.yml.
+Aplicação Flask com uso de um banco de dados, para demonstração de uma vulnerabilidade do tipo SQL Injection, identificável através de um SAST (Static Application Security Testing - Teste Estático de Segurança de Aplicação) especificado no arquivo .gitlab-ci.yml.
+
+## A Vulnerabilidade SQL Injection
+
+- "Injections" são códigos maliciosos que podem ser inseridos das mais diversas formas em aplicações, como através de uma URL ou instrução SQL.
+- Algumas abordagens para contorno:
+    - Separar adequadamente comandos e dados dinâmicos, evitando uma concatenação direta de caracteres;
+    - Uso de frameworks de apoio para construção e execução de instruções SQL.
 
 ## mydb.db
 
@@ -29,25 +35,33 @@ Aplicação Flask + BD para demonstração de uma vulnerabilidade SQL Injection 
  - As linhas 66 e 67 **não contém** uma vulnerabilidade SQL Injection;
  - As linhas 69 e 70 **contém** uma vulnerabilidade SQL Injection, **identificável**  no SAST do .gitlab-ci;
 
-## Deploy com docker compose, com MySQL
+## Executando a Aplicação
+
+### Execução com docker compose, com MySQL
 ```
 $ docker compose up -d
 ```
 
-## Deploy local, com SQLite
+### Execução local, com SQLite
 ```
 $ python app/app.py run
 ```
-## Explorando a vulnerabilidade
 
-Importar a collection flask-sql-injection.postman_collection.json no Postman
+## Exercícios Propostos
 
-OU
+### 1. Explorar a vulnerabilidade de SQL Injection
+
+Via "GET":
+
+Acessando a URL em seu navegador:
 
 ```
 $ GET http://127.0.0.1:5000/login?username=%27%20or%201=1;%20--&password=1234
 ```
 
+Via "POST":
+
+Importando a collection flask-sql-injection.postman_collection.json no Postman
 ```
 POST /login HTTP/1.1
 Host: 127.0.0.1:5000
@@ -56,4 +70,7 @@ Content-Length: 48
 
 username='%20or%201%3D1%3B%20--%20&password=1234
 ```
+
+### 2. Corrigir a vulnerabilidade de SQL Injection, retomando a execução do pipeline com sucesso.
+
 Baseado no projeto [EstudosAvancadosSI](https://github.com/BrunoEleodoro/EstudosAvancadosSI)

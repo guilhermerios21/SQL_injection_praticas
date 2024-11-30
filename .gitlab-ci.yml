@@ -8,19 +8,33 @@
 image: 
   python:latest  # this sets default image for jobs
 
-stages:
-- ver
-- test
-- security
-
-ver:
-  stage: ver
+semgrep-sast:
+  stage: test
   script:
-    - python --version
-    - whoami
+    - echo "Executando SAST com Semgrep..."
 
-sast:
-  stage: security
+check-sast-report:
+  stage: test
+  script:
+    - echo "Validando o relatório SAST..."
+    - |
+      python -c "
+      import json
+      with open('sast-report-filtered.json') as f:
+          report = json.load(f)
+      vulnerabilities = report.get('vulnerabilities', [])
+      if vulnerabilities:
+          print(f'Found {len(vulnerabilities)} vulnerabilities:')
+          for vuln in vulnerabilities:
+              print(f'- {vuln.get(\"message\", \"No message\")}')
+          exit(1)
+      else:
+          print('No vulnerabilities found.')
+      "
+  dependencies:
+    - semgrep-sast
+  allow_failure: false
+
 include:
 - template: Security/SAST.gitlab-ci.yml
 - template: Security/Secret-Detection.gitlab-ci.yml
