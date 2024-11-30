@@ -8,6 +8,17 @@
 image: 
   python:latest  # this sets default image for jobs
 
+semgrep-sast:
+  stage: test
+  script:
+    - echo "Executando SAST com Semgrep..."
+    - semgrep --config auto --output gl-sast-report.json
+    - ls -la # Verifica se o arquivo foi criado
+  artifacts:
+    paths:
+      - gl-sast-report.json
+    expire_in: 1 day
+
 check-sast-report:
   stage: test
   script:
