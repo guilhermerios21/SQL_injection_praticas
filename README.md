@@ -12,19 +12,23 @@ Aplicação Flask com uso de um banco de dados, para demonstração de uma vulne
   
 ## Código
 
+    31    sql_Query_Not_Injection = text("SELECT * FROM users WHERE username=:username AND password=:password")
+    32    result = conn.execute(sql_Query_Not_Injection, parameters=dict(username = username_from_form
+    33                                                                   , password = password_from_form))
+    34    
+    35    sql_Query_Injection_False_Negative = text("SELECT * FROM users WHERE username = '" + username_from_form + "'"
+    36                                           " AND password = " + password_from_form)                                         
+    37    result = conn.execute(sql_Query_Injection_False_Negative)
+
     66 sql_Query_Not_Injection = text("select * from user where id=:user_id")
     67 result = conn.execute(sql_Query_Not_Injection, user_id = id)
     68
     69 sql_Query_Injection_False_Negative = text("SELECT * FROM users WHERE username = '" + username_from_url + "'"
     70                                      " AND password = " + password_from_url)                                         
     71 result = conn.execute(sql_Query_Injection_False_Negative)
-    72
-    73 # deprecated in SQLAlchemy >=2.0
-    74 sql_Query_Injection = "SELECT * FROM users WHERE id={}".format(id)
-    75 result = conn.execute(sql_Query_Injection)
 
- - As linhas 66 e 67 **não contém** uma vulnerabilidade SQL Injection;
- - As linhas 69 e 70 **contém** uma vulnerabilidade SQL Injection, **identificável**  no SAST do .gitlab-ci;
+ - As linhas 31, 32, 66 e 67 **não contém** uma vulnerabilidade SQL Injection;
+ - As linhas 35, 36, 69 e 70 **contém** uma vulnerabilidade SQL Injection, **identificável**  no SAST do .gitlab-ci;
 
 ## Executando a Aplicação
 

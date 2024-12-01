@@ -8,6 +8,10 @@
 image: 
   python:latest  # this sets default image for jobs
 
+stages:
+  - test
+  - validate
+
 semgrep-sast:
   stage: test
   artifacts:
@@ -19,7 +23,7 @@ semgrep-sast:
     when: always
 
 check-sast-report:
-  stage: test
+  stage: validate
   script:
     - echo "Listando arquivos disponíveis:"
     - ls -la
