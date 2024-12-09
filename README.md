@@ -32,7 +32,7 @@ Aplicação Flask com uso de um banco de dados, para demonstração de uma vulne
 
 ## Exercícios Propostos
 
-### 1. Explorar a vulnerabilidade de SQL Injection
+1. **Explorar a vulnerabilidade de SQL Injection**
 
 Via "GET":
 
@@ -54,7 +54,7 @@ Content-Length: 48
 username='%20or%201%3D1%3B%20--%20&password=1234
 ```
 
-### 2. Corrigir a vulnerabilidade de SQL Injection, retomando a execução do pipeline com sucesso.
+2. **Corrigir a vulnerabilidade de SQL Injection, retomando a execução do pipeline com sucesso.**
 
 ## Executando a Aplicação
 
