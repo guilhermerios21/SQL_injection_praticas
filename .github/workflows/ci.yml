@@ -1,0 +1,79 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  semgrep-sast:
+    name: Semgrep SAST
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout do codigo
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Instalar Semgrep
+        run: pip install semgrep
+
+      - name: Gerar relatorio SAST (formato GitLab)
+        run: semgrep scan --config auto --gitlab-sast --output gl-sast-report.json
+
+      - name: Publicar artefato SAST
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sast
+          path: gl-sast-report.json
+
+  check-sast-report:
+    name: Validar relatorio SAST
+    runs-on: ubuntu-latest
+    needs: semgrep-sast
+
+    steps:
+      - name: Baixar artefato SAST
+        uses: actions/download-artifact@v4
+        with:
+          name: sast
+
+      - name: Validar o relatorio SAST
+        run: |
+          echo "Validando o relatorio SAST..."
+          python -c "
+          import json
+
+          # Lendo o relatorio
+          with open('gl-sast-report.json') as f:
+              report = json.load(f)
+
+          # Obtendo as vulnerabilidades
+          vulnerabilities = report.get('vulnerabilities', [])
+
+          if vulnerabilities:
+              print(f'\n== Relatorio de Vulnerabilidades ({len(vulnerabilities)} encontradas) ==')
+              for vuln in vulnerabilities:
+                  name = vuln.get('name', 'Sem nome')
+                  description = vuln.get('description', 'Sem descricao').replace('\\n', ' ')
+                  file = vuln.get('location', {}).get('file', 'Arquivo nao especificado')
+                  start_line = vuln.get('location', {}).get('start_line', 'Inicio desconhecido')
+                  end_line = vuln.get('location', {}).get('end_line', 'Fim desconhecido')
+                  severity = vuln.get('severity', 'Severidade nao especificada')
+
+                  print(f'\n- Nome: {name}')
+                  print(f'  Severidade: {severity}')
+                  print(f'  Descricao: {description}')
+                  print(f'  Arquivo: {file}')
+                  print(f'  Linhas: {start_line}-{end_line}')
+
+              exit(1)
+          else:
+              print('Nenhuma vulnerabilidade encontrada.')
+          "
